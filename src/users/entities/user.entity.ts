@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Address } from './address.entity';
 
 
 @Entity()
@@ -14,5 +15,8 @@ export class User {
 
   @Column()
   position: string
+
+  @OneToMany(type => Address, address => address.user)
+  addresses: Address[]
 
 }
