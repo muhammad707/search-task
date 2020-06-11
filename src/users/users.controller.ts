@@ -1,7 +1,7 @@
 import { Controller, Get, Query, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { GetUsersFilterDto } from './dto/get-users-filter.dto';
-import { User } from './user.entity';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
