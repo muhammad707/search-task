@@ -31,20 +31,40 @@ export class UserRepository extends Repository<User> {
         WHERE 
         `
 
-        let query1 = `"u"."fullname" ~* $1`
-        let query2 = `"u"."position" ~* $2`
-        let query3 = `"a"."address" ~* $3`
+        // let query1 = `"u"."fullname" ~* $1`
+        // let query2 = `"u"."position" ~* $1`
+        // let query3 = `"a"."address" ~* $1`
        
+        // for(let i = 1; i<arr.length; i++) {
+        //     query1 += ` OR "u"."fullname" ~* $${i+1}`;
+        //     query1 += ` OR "u"."position" ~* $${i+1}`;
+        //     query1 += ` OR "a"."address" ~* $${i+1}`;
+        // }
+        // for(let i = 1; i<arr.length; i++) {
+        //     query2 += ` OR "u"."fullname" ~* $${i+1}`;
+        //     query2 += ` OR "u"."position" ~* $${i+1}`;
+        //     query2 += ` OR "a"."address" ~* $${i+1}`;
+        // }
+        // for(let i = 1; i<arr.length; i++) {
+        //     query3 += ` OR "u"."fullname" ~* $${i+1}`;
+        //     query3 += ` OR "u"."position" ~* $${i+1}`;
+        //     query1 += ` OR "a"."address" ~* $${i+1}`;
+        // }
+        // queryBuilder = queryBuilder + ` (${query1}) AND (${query2}) AND (${query3})`
+        // console.log(queryBuilder)
+        // const params = [...arr, ...arr, ...arr ] 
+        // console.log(params)
+        // const result = await connection.query(queryBuilder, arr);
+        // console.log(result)
+
+        let query = `("u"."fullname" ~* $1 OR "u"."position" ~* $1 OR "u"."position" ~* $1)`
         for(let i = 1; i<arr.length; i++) {
-            query1 += ` AND "u"."fullname" ~* $${i*3+1}`;
-            query2 += ` AND "u"."position" ~* $${i*3+2}`;
-            query3 += ` AND "a"."address" ~* $${i*3+3}`;
+            query = query + ` AND ("u"."fullname" ~* $${i+1} OR "u"."position" ~* $${i+1} OR "u"."position" ~* $${i+1})`
         }
-        queryBuilder = queryBuilder + ` (${query1}) OR (${query2}) OR (${query3})`
-        console.log(queryBuilder)
-        const params = [...arr, ...arr, ...arr ] 
-        console.log(params)
-        const result = await connection.query(queryBuilder, params);
+        queryBuilder = queryBuilder + query
+        console.log(queryBuilder) 
+        console.log(arr)
+        const result = await connection.query(queryBuilder, arr);
         console.log(result)
         try {
             // const users = await query.getMany()
