@@ -14,11 +14,8 @@ export class UserRepository extends Repository<User> {
 
         const {search} = filterDto;
         let arr = []
-        if(search) {
-            arr = search.split(" ");
-        
 
-            let queryBuilder = `
+        let queryBuilder = `
             SELECT
                 distinct("u"."id"), "u"."fullname", "u"."position", "a"."address"
             FROM 
@@ -27,41 +24,23 @@ export class UserRepository extends Repository<User> {
                 "address" "a"
             ON 
                 "u"."id" = "a"."userId" 
-            WHERE 
             `
 
-            let query = `("u"."fullname" ~* $1 OR "u"."position" ~* $1 OR "u"."position" ~* $1)`
+        if(search) {
+            arr = search.split(" ");
+
+            let query = `WHERE ("u"."fullname" ~* $1 OR "u"."position" ~* $1 OR "u"."position" ~* $1)`
             for(let i = 1; i<arr.length; i++) {
                 query = query + ` AND ("u"."fullname" ~* $${i+1} OR "u"."position" ~* $${i+1} OR "u"."position" ~* $${i+1})`
             }
-            queryBuilder = queryBuilder + query
-            
-            try {
-                const result = await connection.query(queryBuilder, arr);
-                return result
-            } catch (error) {
-                console.log(error)
-                throw new InternalServerErrorException();
-            }
-        } else {
-            const queryBuilder = `
-            SELECT
-                distinct("u"."id"), "u"."fullname", "u"."position", "a"."address"
-            FROM 
-                "user" "u" 
-            LEFT JOIN
-                "address" "a"
-            ON 
-                "u"."id" = "a"."userId" 
-            `
-            
-            try {
-                const result = await connection.query(queryBuilder, arr);
-                return result
-            } catch (error) {
-                console.log(error)
-                throw new InternalServerErrorException();
-            }
+            queryBuilder = queryBuilder + query 
+        } 
+        try {
+            const result = await connection.query(queryBuilder, arr);
+            return result
+        } catch (error) {
+            console.log(error)
+            throw new InternalServerErrorException();
         }
     }
     
